@@ -22,12 +22,8 @@ def choose_statistical_test(numerical_data, categorical_data, sample_size, indep
                 return "Paired t-test (parametric) or Wilcoxon Signed-Rank test (non-parametric)"
         elif sample_size > 2:
             if independence == "independent":
-                if post_hoc:
-                    return "Tukey's HSD, Scheffe's test, Bonferroni (parametric); Dunn's test, Conover test (non-parametric)"
                 return "One-way ANOVA (parametric) or Kruskal-Wallis test (non-parametric)"
             elif independence == "dependent":
-                if post_hoc:
-                    return "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak, Holm-Bonferroni)"
                 return "Repeated Measures ANOVA (parametric) or Friedman test (non-parametric)"
     elif data_type == "categorical":
         if sample_size == 1:
@@ -56,17 +52,11 @@ def choose_statistical_test(numerical_data, categorical_data, sample_size, indep
                 return "Paired t-test (parametric) or Wilcoxon Signed-Rank test (non-parametric)"
         elif sample_size > 2:
             if independence == "independent":
-                if post_hoc:
-                    return "Tukey's HSD, Scheffe's test, Bonferroni (parametric); Dunn's test, Conover test (non-parametric)"
                 return "One-way MANOVA (parametric) or Kruskal-Wallis test (non-parametric)"
             elif independence == "dependent":
-                if post_hoc:
-                    return "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak, Holm-Bonferroni)"
                 return "Repeated Measures MANOVA (parametric) or Friedman test (non-parametric)"
 
-# Example usage:
-result = choose_statistical_test("both", 3, "independent", "correlation", post_hoc=True)
-print(result)  # Output: Tukey's HSD, Scheffe's test, Bonferroni (
+
 
 
 st.title('Statistical Test Selector')
