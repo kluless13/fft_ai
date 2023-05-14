@@ -15,9 +15,10 @@ def app():
         result = choose_statistical_test(data_type_1, data_type_2, sample_size, independence, test_type)
         st.write(f"The suggested statistical test is: {result}")
         
-        if st.button("Choose Post Hoc Test"):
-            posthoc_result = choose_posthoc_test(data_type_1, data_type_2, result)
-            st.write(f"The suggested post hoc test is: {posthoc_result}")
+    if st.button("Choose Post Hoc Test"):
+        posthoc_result = choose_posthoc_test(data_type_1, data_type_2, sample_size, independence)
+        st.write(f"The suggested post hoc test is: {posthoc_result}")
+
 
 
 if __name__ == "__main__":

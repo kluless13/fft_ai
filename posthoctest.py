@@ -1,14 +1,18 @@
-def choose_posthoc_test(data_type_1, data_type_2, statistical_test):
-    posthoc_tests = {
-        "One-way ANOVA": "Tukey's HSD, Scheffe's test, Bonferroni (parametric); Dunn's test, Conover test (non-parametric)",
-        "Repeated Measures ANOVA": "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak, Holm-Bonferroni)",
-        "Chi-Square Test of Independence": "Post hoc analysis with adjusted residuals",
-        "Logistic Regression": "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak)",
-        "One-way MANOVA": "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak)",
-        "Repeated Measures MANOVA": "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak)",
-    }
+def choose_posthoc_test(data_type_1, data_type_2, sample_size, independence):
+    if data_type_1 == "numerical" and data_type_2 == "None":
+        if sample_size > 2:
+            if independence == "independent":
+                return "Tukey's HSD, Scheffe's test, Bonferroni (parametric); Dunn's test, Conover test (non-parametric)"
+            elif independence == "dependent":
+                return "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak, Holm-Bonferroni)"
 
-    if statistical_test in posthoc_tests:
-        return posthoc_tests[statistical_test]
+    elif data_type_1 == "categorical" and data_type_2 =="None":
+        if sample_size > 2:
+            return "Post hoc analysis with adjusted residuals"
+
+    elif data_type_1 == "numerical" and data_type_2 == "categorical":
+        if sample_size > 2:
+            return "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak)"
+
     else:
-        return "No post hoc test necessary"
+        return "No valid data type selected"
