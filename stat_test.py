@@ -1,15 +1,5 @@
-import streamlit as st
-
-def choose_statistical_test(numerical_data, categorical_data, sample_size, independence, test_type):
-    if numerical_data and not categorical_data:
-        data_type = "numerical"
-    elif not numerical_data and categorical_data:
-        data_type = "categorical"
-    elif numerical_data and categorical_data:
-        data_type = "both"
-    else:
-        return "No valid data type selected"
-    if data_type == "numerical":
+def choose_statistical_test(data_type_1, data_type_2, sample_size, independence, test_type):
+    if data_type_1 == "numerical" and data_type_2 is None:
         if sample_size == 1:
             if test_type == "correlation":
                 return "Pearson's r"
@@ -25,7 +15,8 @@ def choose_statistical_test(numerical_data, categorical_data, sample_size, indep
                 return "One-way ANOVA (parametric) or Kruskal-Wallis test (non-parametric)"
             elif independence == "dependent":
                 return "Repeated Measures ANOVA (parametric) or Friedman test (non-parametric)"
-    elif data_type == "categorical":
+
+    elif data_type_1 == "categorical" and data_type_2 is None:
         if sample_size == 1:
             if test_type == "difference":
                 return "Chi-Square Goodness-of-Fit test"
@@ -39,10 +30,11 @@ def choose_statistical_test(numerical_data, categorical_data, sample_size, indep
                 return "Logistic Regression or Multiple Logistic Regression"
             elif independence == "dependent":
                 return "GEE (Generalized Estimating Equations) or Multilevel Modeling (Mixed Models)"
-    elif data_type == "both":
+
+    elif data_type_1 == "numerical" and data_type_2 == "categorical":
         if sample_size == 1:
             if test_type == "correlation":
-                return "Bi-variate correlation"
+                return "Bivariate correlation"
             elif test_type == "difference":
                 return "Chi-Square Goodness-of-Fit test"
         elif sample_size == 2:
@@ -56,17 +48,5 @@ def choose_statistical_test(numerical_data, categorical_data, sample_size, indep
             elif independence == "dependent":
                 return "Repeated Measures MANOVA (parametric) or Friedman test (non-parametric)"
 
-
-
-
-st.title('Statistical Test Selector')
-
-numerical_data = st.checkbox('Do you have numerical data?')
-categorical_data = st.checkbox('Do you have categorical data?')
-sample_size = st.number_input('Enter the sample size', min_value=1, value=1)
-independence = st.selectbox('Is the sampling independent or dependent?', ('independent', 'dependent'))
-test_type = st.selectbox('What type of test do you want to conduct?', ('correlation', 'difference'), index=0)
-
-if st.button('Calculate'):
-    result = choose_statistical_test(numerical_data, categorical_data, sample_size, independence, test_type)
-    st.write('You should consider the following statistical test(s):', result)
+    else:
+        return "No valid data type selected"
