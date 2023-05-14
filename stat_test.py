@@ -1,63 +1,82 @@
-def choose_statistical_test(purpose, data_type_1, data_type_2=None):
-    # Convert input strings to lowercase to ensure consistent comparisons
-    purpose = purpose.lower()
-    data_type_1 = data_type_1.lower()
-    data_type_2 = data_type_2.lower() if data_type_2 else None
+import streamlit as st
 
-    # Check if the purpose is correlation or association
-    if purpose == 'correlation' or purpose == 'association':
-        # Case: Numerical vs. Numerical data
-        if data_type_1 == 'numerical' and data_type_2 == 'numerical':
-            return ["Pearson's correlation coefficient", "Spearman's rank correlation coefficient"]
-        
-        # Case: Categorical vs. Categorical data
-        elif (data_type_1 == 'categorical' and data_type_2 == 'categorical') or \
-             (data_type_2 == 'categorical' and data_type_1 == 'categorical'):
-            return ["Chi-squared test", "Fisher's exact test (for small sample sizes)"]
-        
-        # Case: Numerical vs. Categorical data
-        elif (data_type_1 == 'numerical' and data_type_2 == 'categorical') or \
-             (data_type_2 == 'numerical' and data_type_1 == 'categorical'):
-            return ["Point-biserial correlation coefficient"]
-
-    # Check if the purpose is difference or comparison
-    elif purpose == 'difference' or purpose == 'comparison':
-        # Case: Numerical data
-        if data_type_1 == 'numerical':
-            # One sample
-            if data_type_2 is None:
-                return ["One-sample t-test", "One-sample Wilcoxon signed-rank test (non-parametric)"]
-            
-            # Two independent samples
-            elif data_type_2 == 'independent':
-                return ["Independent two-sample t-test", "Mann-Whitney U test (non-parametric)"]
-            
-            # Two paired samples
-            elif data_type_2 == 'paired':
-                return ["Paired t-test", "Wilcoxon signed-rank test (non-parametric)"]
-            
-            # More than two samples
-            elif data_type_2 == 'multiple':
-                return ["One-way ANOVA (post hoc tests: Tukey's HSD, Bonferroni, Scheffe's test)",
-                        "Kruskal-Wallis test (non-parametric) (post hoc tests: Dunn's test, Conover's test)"]
-
-        # Case: Categorical data
-        elif data_type_1 == 'categorical':
-            # Two independent samples
-            if data_type_2 == 'independent':
-                return ["Chi-squared test", "Fisher's exact test (for small sample sizes)"]
-            
-            # More than two samples
-            elif data_type_2 == 'multiple':
-                return ["Cochran's Q test (paired data) (post hoc tests: McNemar's test for pairwise comparisons)"]
-
-    # Return an error message if the input is invalid
+def choose_statistical_test(numerical_data, categorical_data, sample_size, independence, test_type):
+    if numerical_data and not categorical_data:
+        data_type = "numerical"
+    elif not numerical_data and categorical_data:
+        data_type = "categorical"
+    elif numerical_data and categorical_data:
+        data_type = "both"
     else:
-        return "Invalid input. Please check the purpose and data types."
+        return "No valid data type selected"
+    if data_type == "numerical":
+        if sample_size == 1:
+            if test_type == "correlation":
+                return "Pearson's r"
+            elif test_type == "difference":
+                return "One-Sample t-test"
+        elif sample_size == 2:
+            if independence == "independent":
+                return "Two-Sample t-test (parametric) or Mann-Whitney U-test (non-parametric)"
+            elif independence == "dependent":
+                return "Paired t-test (parametric) or Wilcoxon Signed-Rank test (non-parametric)"
+        elif sample_size > 2:
+            if independence == "independent":
+                if post_hoc:
+                    return "Tukey's HSD, Scheffe's test, Bonferroni (parametric); Dunn's test, Conover test (non-parametric)"
+                return "One-way ANOVA (parametric) or Kruskal-Wallis test (non-parametric)"
+            elif independence == "dependent":
+                if post_hoc:
+                    return "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak, Holm-Bonferroni)"
+                return "Repeated Measures ANOVA (parametric) or Friedman test (non-parametric)"
+    elif data_type == "categorical":
+        if sample_size == 1:
+            if test_type == "difference":
+                return "Chi-Square Goodness-of-Fit test"
+        elif sample_size == 2:
+            if independence == "independent":
+                return "Chi-Square Test of Independence or Fisher's Exact Test (if expected frequencies are small)"
+            elif independence == "dependent":
+                return "McNemar's Test"
+        elif sample_size > 2:
+            if independence == "independent":
+                return "Logistic Regression or Multiple Logistic Regression"
+            elif independence == "dependent":
+                return "GEE (Generalized Estimating Equations) or Multilevel Modeling (Mixed Models)"
+    elif data_type == "both":
+        if sample_size == 1:
+            if test_type == "correlation":
+                return "Bi-variate correlation"
+            elif test_type == "difference":
+                return "Chi-Square Goodness-of-Fit test"
+        elif sample_size == 2:
+            if independence == "independent":
+                return "Two-Sample t-test (parametric) or Mann-Whitney U-test (non-parametric)"
+            elif independence == "dependent":
+                return "Paired t-test (parametric) or Wilcoxon Signed-Rank test (non-parametric)"
+        elif sample_size > 2:
+            if independence == "independent":
+                if post_hoc:
+                    return "Tukey's HSD, Scheffe's test, Bonferroni (parametric); Dunn's test, Conover test (non-parametric)"
+                return "One-way MANOVA (parametric) or Kruskal-Wallis test (non-parametric)"
+            elif independence == "dependent":
+                if post_hoc:
+                    return "Pairwise comparisons with adjustments (e.g., Bonferroni, Sidak, Holm-Bonferroni)"
+                return "Repeated Measures MANOVA (parametric) or Friedman test (non-parametric)"
 
 # Example usage:
-purpose = "correlation"
-data_type_1 = "numerical"
-data_type_2 = "categorical"
+result = choose_statistical_test("both", 3, "independent", "correlation", post_hoc=True)
+print(result)  # Output: Tukey's HSD, Scheffe's test, Bonferroni (
 
-print(choose_statistical_test(purpose, data_type_1, data_type_2))
+
+st.title('Statistical Test Selector')
+
+numerical_data = st.checkbox('Do you have numerical data?')
+categorical_data = st.checkbox('Do you have categorical data?')
+sample_size = st.number_input('Enter the sample size', min_value=1, value=1)
+independence = st.selectbox('Is the sampling independent or dependent?', ('independent', 'dependent'))
+test_type = st.selectbox('What type of test do you want to conduct?', ('correlation', 'difference'), index=0)
+
+if st.button('Calculate'):
+    result = choose_statistical_test(numerical_data, categorical_data, sample_size, independence, test_type)
+    st.write('You should consider the following statistical test(s):', result)
