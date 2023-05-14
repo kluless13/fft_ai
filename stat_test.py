@@ -1,5 +1,5 @@
 def choose_statistical_test(data_type_1, data_type_2, sample_size, independence, test_type):
-    if data_type_1 == "numerical" and data_type_2 is None:
+    if data_type_1 == "numerical" and data_type_2 == "None":
         if sample_size == 1:
             if test_type == "correlation":
                 return "Pearson's r"
@@ -16,7 +16,7 @@ def choose_statistical_test(data_type_1, data_type_2, sample_size, independence,
             elif independence == "dependent":
                 return "Repeated Measures ANOVA (parametric) or Friedman test (non-parametric)"
 
-    elif data_type_1 == "categorical" and data_type_2 is None:
+    elif data_type_1 == "categorical" and data_type_2 == "None":
         if sample_size == 1:
             if test_type == "difference":
                 return "Chi-Square Goodness-of-Fit test"
