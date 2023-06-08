@@ -1,0 +1,9 @@
+Figure out logic for code 
+
+Code out logic
+
+Develop web app
+
+Fix inconsistencies
+
+Add more info about each test and the loogic behind it 
