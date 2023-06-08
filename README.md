@@ -9,5 +9,5 @@ Here's how 👇
 2. change directory to 'stats'
     `cd stats`
 3. install requirements
-    `pip install -r requirements.txt`
+    `pip install -r requirement.txt`
 4. run app `streamlit run web_app.py`
