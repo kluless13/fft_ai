@@ -6,8 +6,8 @@ Here's how 👇
 
 1. git clone the repo
   `git clone https://github.com/kluless13/stats.git`
-2. install streamlit
-  `pip install streamlit`
-3. change directory to where the repo has been cloned
-  `cd stats`
-4. `streamlit run web_app.py`
+2. change directory to 'stats'
+    `cd stats`
+3. install requirements
+    `pip install -r requirements.txt`
+4. run app `streamlit run web_app.py`
